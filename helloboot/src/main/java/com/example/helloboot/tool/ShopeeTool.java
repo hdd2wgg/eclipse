@@ -1,7 +1,6 @@
 package com.example.helloboot.tool;
 
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -11,8 +10,11 @@ import com.alibaba.fastjson.JSONObject;
 public class ShopeeTool {
 
 	public static final String redirectURL = "http://127.0.0.1:8080";
-	public static final String partnerKey = "e037d336bbc0fb5f93da45e0e99800bbd2d30f36fd8c9edbe960fcb448e87469";
-	public static final int partnerId = 841956;
+	public static final String Test_partnerKey = "e037d336bbc0fb5f93da45e0e99800bbd2d30f36fd8c9edbe960fcb448e87469";
+	public static final int Test_partnerId = 841956;
+	
+	public static final String Live_partnerKey = "8984856a61c6fb27947a113a99cb279d813c62c75dd4a6ee4581e4a166496073";
+	public static final int Live_partnerId = 841682;
 	
 	public static final String dh = "=";
 	public static final String gg = "&";
@@ -27,9 +29,9 @@ public class ShopeeTool {
 	 * @return 获取用户授权或则取消授权的uRL 链接
 	 */
 	public static String getOrCancelAuthorizationUrl(String urlStr) {
-		String token = calToken(redirectURL, partnerKey);
+		String token = calToken(redirectURL, Test_partnerKey);
 		StringBuffer sb = new StringBuffer();
-		sb.append(ShopeeUrl.host).append(urlStr).append("?id=").append(partnerId).append("&token=").append(token)
+		sb.append(ShopeeUrl.host).append(urlStr).append("?id=").append(Test_partnerId).append("&token=").append(token)
 				.append("&redirect=").append(redirectURL);
 		return sb.toString();
 	}
@@ -55,7 +57,7 @@ public class ShopeeTool {
 	 * @return
 	 */
 	public static String mapToJsonStr(Map<String,Object> conditions) {
-		conditions.put("partner_id", partnerId);
+		conditions.put("partner_id", Test_partnerId);
 		long currentTimestamp = getCurrentTimestamp();
 		conditions.put("timestamp", currentTimestamp);
 		JSONObject job = new JSONObject(conditions);
