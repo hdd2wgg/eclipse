@@ -72,9 +72,4 @@ public class ShopeeTool {
 		long timeStampMillis = instant.toEpochMilli();
 		return timeStampMillis / 1000;
 	}
-
-	public static void main(String[] args) {
-
-		System.out.println(getCurrentTimestamp());
-	}
 }
