@@ -7,7 +7,7 @@ package com.example.helloboot.model.item;
 * @author bejson.com (i@bejson.com)
 * @website http://www.bejson.com/java2pojo/
 */
-public class JsonRootBean {
+public class JsonItem {
 
    private Item item;
    private String warning;

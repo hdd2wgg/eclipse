@@ -20,7 +20,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.example.helloboot.model.item.Item;
-import com.example.helloboot.model.item.JsonRootBean;
+import com.example.helloboot.model.item.JsonItem;
 
 public class ShopeeTool {
 
@@ -182,8 +182,7 @@ public class ShopeeTool {
 		conditions.put("item_id", 7723519760L);
 		String shopeeUrl = ShopeeUrl.GetItemDetail;
 		String res = getShopeeData(shopeeUrl, conditions);
-		System.out.println(res);
-		JsonRootBean jsonRootBean = JSON.parseObject(res, new TypeReference<JsonRootBean>() {});
-		System.out.println(jsonRootBean.getItem().getCreate_time());
+		JsonItem jsonjsonItem = JSON.parseObject(res, new TypeReference<JsonItem>() {});
+		System.out.println(jsonjsonItem.getItem().getVariations().size());
 	}
 }
