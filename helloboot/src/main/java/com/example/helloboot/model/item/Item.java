@@ -1,4 +1,4 @@
-package com.example.helloboot.model;
+package com.example.helloboot.model.item;
 
 import java.util.List;
 /**
@@ -296,5 +296,21 @@ public class Item {
      public int getCategory_id() {
          return category_id;
      }
+	@Override
+	public String toString() {
+		return "Item [logistics=" + logistics + ", original_price=" + original_price + ", package_width="
+				+ package_width + ", cmt_count=" + cmt_count + ", weight=" + weight + ", shopid=" + shopid
+				+ ", currency=" + currency + ", create_time=" + create_time + ", likes=" + likes + ", images=" + images
+				+ ", tenures=" + tenures + ", is_2tier_item=" + is_2tier_item + ", days_to_ship=" + days_to_ship
+				+ ", package_length=" + package_length + ", reserved_stock=" + reserved_stock + ", stock=" + stock
+				+ ", status=" + status + ", update_time=" + update_time + ", description=" + description + ", views="
+				+ views + ", price=" + price + ", sales=" + sales + ", discount_id=" + discount_id + ", item_id="
+				+ item_id + ", wholesales=" + wholesales + ", condition=" + condition + ", package_height="
+				+ package_height + ", name=" + name + ", rating_star=" + rating_star + ", item_sku=" + item_sku
+				+ ", variations=" + variations + ", size_chart=" + size_chart + ", is_pre_order=" + is_pre_order
+				+ ", has_variation=" + has_variation + ", attributes=" + attributes + ", category_id=" + category_id
+				+ "]";
+	}
+     
 
 }

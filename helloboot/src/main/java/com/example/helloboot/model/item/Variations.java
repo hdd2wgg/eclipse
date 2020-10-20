@@ -1,10 +1,9 @@
-package com.example.helloboot.model;
+package com.example.helloboot.model.item;
 
 /**
  * Copyright 2020 bejson.com 
  */
 import java.util.List;
-import java.util.Date;
 
 /**
 * Auto-generated: 2020-10-20 20:53:29
@@ -22,7 +21,7 @@ public class Variations {
    private long variation_id;
    private int discount_id;
    private long create_time;
-   private Date name;
+   private String name;
    private boolean is_set_item;
    private String variation_sku;
    private int reserved_stock;
@@ -83,10 +82,10 @@ public class Variations {
         return create_time;
     }
 
-   public void setName(Date name) {
+   public void setName(String name) {
         this.name = name;
     }
-    public Date getName() {
+    public String getName() {
         return name;
     }
 

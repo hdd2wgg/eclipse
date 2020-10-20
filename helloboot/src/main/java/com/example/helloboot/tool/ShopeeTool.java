@@ -16,7 +16,11 @@ import org.jsoup.Connection;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
+import com.example.helloboot.model.item.Item;
+import com.example.helloboot.model.item.JsonRootBean;
 
 public class ShopeeTool {
 
@@ -162,6 +166,14 @@ public class ShopeeTool {
 		return timeStampMillis / 1000;
 	}
 	
+	/**
+     * 复杂json格式字符串与JavaBean_obj之间的转换
+     */
+    public static void testComplexJSONStrToJavaBean(String json){
+
+        Item item = JSON.parseObject(json, new TypeReference<Item>() {});
+    }
+	
 	public static void main(String[] args) {
 		Map<String, Object> conditions = new HashMap<String,Object>();
 		String[] ordersn_list = {"201014A50JJKJE"};
@@ -171,5 +183,7 @@ public class ShopeeTool {
 		String shopeeUrl = ShopeeUrl.GetItemDetail;
 		String res = getShopeeData(shopeeUrl, conditions);
 		System.out.println(res);
+		JsonRootBean jsonRootBean = JSON.parseObject(res, new TypeReference<JsonRootBean>() {});
+		System.out.println(jsonRootBean.getItem().getCreate_time());
 	}
 }

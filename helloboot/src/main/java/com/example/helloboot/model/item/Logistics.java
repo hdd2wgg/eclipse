@@ -1,4 +1,4 @@
-package com.example.helloboot.model;
+package com.example.helloboot.model.item;
 
 
 /**
