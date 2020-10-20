@@ -164,8 +164,11 @@ public class ShopeeTool {
 	
 	public static void main(String[] args) {
 		Map<String, Object> conditions = new HashMap<String,Object>();
+		String[] ordersn_list = {"201014A50JJKJE"};
 		conditions.put("shopid", shopid);
-		String shopeeUrl = ShopeeUrl.GetShopInfo;
+//		conditions.put("ordersn_list", ordersn_list);
+		conditions.put("item_id", 7723519760L);
+		String shopeeUrl = ShopeeUrl.GetItemDetail;
 		String res = getShopeeData(shopeeUrl, conditions);
 		System.out.println(res);
 	}
