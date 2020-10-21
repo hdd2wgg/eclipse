@@ -48,5 +48,10 @@ public class ShopeeUrl {
 	public static final String GetItemsList = "api/v1/items/get";
 	
 	public static final String GetItemDetail ="api/v1/item/get";
+	
+	/**
+	 * 上传图片
+	 */
+	public static final String UploadImg = "api/v1/image/upload";
 
 }

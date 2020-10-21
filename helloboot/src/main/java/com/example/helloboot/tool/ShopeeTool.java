@@ -177,12 +177,17 @@ public class ShopeeTool {
 	public static void main(String[] args) {
 		Map<String, Object> conditions = new HashMap<String,Object>();
 		String[] ordersn_list = {"201014A50JJKJE"};
+		String[] images = {"https://cbu01.alicdn.com/img/ibank/2020/184/736/20244637481_1972197700.400x400.jpg","http://3r47665h74.wicp.vip:35704/sss.jpeg"};
 		conditions.put("shopid", shopid);
 //		conditions.put("ordersn_list", ordersn_list);
-		conditions.put("item_id", 7723519760L);
-		String shopeeUrl = ShopeeUrl.GetItemDetail;
+		conditions.put("images", images);
+//		conditions.put("item_id", 7723519760L);
+		String shopeeUrl = ShopeeUrl.UploadImg;
 		String res = getShopeeData(shopeeUrl, conditions);
-		JsonItem jsonjsonItem = JSON.parseObject(res, new TypeReference<JsonItem>() {});
-		System.out.println(jsonjsonItem.getItem().getVariations().size());
+//		JsonItem jsonjsonItem = JSON.parseObject(res, new TypeReference<JsonItem>() {});
+		System.out.println(res);
+		
 	}
+	
+	
 }
