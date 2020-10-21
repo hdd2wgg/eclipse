@@ -5,12 +5,12 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
-import com.example.helloboot.model.User;
+import com.example.helloboot.model.UserBean;
 
 @Mapper
 public interface UserMapper {
 
 	// 查询所有用户
 	@Select("select * from t_user")
-	List<User> getAllUser();
+	List<UserBean> getAllUser();
 }

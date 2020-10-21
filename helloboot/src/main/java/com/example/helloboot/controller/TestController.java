@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.helloboot.mapper.UserMapperImpl;
-import com.example.helloboot.model.User;
+import com.example.helloboot.model.UserBean;
 
 @RestController
 @RequestMapping("/hello")
@@ -29,7 +29,7 @@ public class TestController {
 
 	@RequestMapping("/hello")
 	public Object helloworld() {
-		List<User> users = service.getAllUser();
+		List<UserBean> users = service.getAllUser();
 
 		return users;
 	}

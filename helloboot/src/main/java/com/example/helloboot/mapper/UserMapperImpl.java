@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.helloboot.model.User;
+import com.example.helloboot.model.UserBean;
 
 @Service
 public class UserMapperImpl implements UserInterface{
@@ -14,7 +14,7 @@ public class UserMapperImpl implements UserInterface{
 	private UserMapper userMapper;
 	
 	@Override
-	public List<User> getAllUser() {
+	public List<UserBean> getAllUser() {
 		return userMapper.getAllUser();
 	}
 
