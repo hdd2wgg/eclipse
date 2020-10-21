@@ -2,6 +2,8 @@ package com.example.helloboot.model.order;
 
 import java.util.List;
 
+import com.example.helloboot.model.item.Item;
+
 /**
 * Auto-generated: 2020-10-20 21:44:24
 *
@@ -38,7 +40,7 @@ public class Orders {
    private boolean goods_to_declare;
    private String total_amount;
    private String service_code;
-   private List<Items> items;
+   private List<Item> items;
    private String actual_shipping_cost;
    private boolean cod;
    private String country;
@@ -46,6 +48,7 @@ public class Orders {
    private String dropshipper;
    private boolean is_actual_shipping_fee_confirmed;
    private String buyer_username;
+   
    public void setEstimated_shipping_fee(String estimated_shipping_fee) {
         this.estimated_shipping_fee = estimated_shipping_fee;
     }
@@ -242,10 +245,10 @@ public class Orders {
         return service_code;
     }
 
-   public void setItems(List<Items> items) {
+   public void setItems(List<Item> items) {
         this.items = items;
     }
-    public List<Items> getItems() {
+    public List<Item> getItems() {
         return items;
     }
 
