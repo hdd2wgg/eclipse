@@ -2,18 +2,16 @@ package com.example.helloboot.model.item;
 
 
 /**
-* Auto-generated: 2020-10-20 20:53:29
-*
-* @author bejson.com (i@bejson.com)
-* @website http://www.bejson.com/java2pojo/
+* 商品属性
+* 
 */
 public class Attributes {
 
-   private String attribute_name;
-   private boolean is_mandatory;
-   private int attribute_id;
-   private String attribute_value;
-   private String attribute_type;
+   private String attribute_name; 	// 属性名称
+   private boolean is_mandatory;	// 是否是强制
+   private int attribute_id;		// 属性ID
+   private String attribute_value;	// 属性结果
+   private String attribute_type;	// 属性类型
    public void setAttribute_name(String attribute_name) {
         this.attribute_name = attribute_name;
     }

@@ -16,7 +16,7 @@ public class Variations {
    private String status;
    private double original_price; 			// 原价
    private long update_time;				// 更新时间
-   private List<String> set_content;
+   private List<String> set_content;		// 这是干嘛的，我不知道
    private double price;
    private long variation_id;
    private int discount_id;

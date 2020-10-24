@@ -19,7 +19,7 @@ public class Item {
     private long create_time;
     private int likes;
     private List<String> images;
-    private List<String> tenures;
+    private List<String> tenures;   		// 这个参数待定，不知道有什么用
     private boolean is_2tier_item;
     private int days_to_ship;
     private double package_length;
