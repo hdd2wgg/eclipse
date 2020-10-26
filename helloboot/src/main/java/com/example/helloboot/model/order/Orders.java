@@ -40,7 +40,7 @@ public class Orders {
    private boolean goods_to_declare;
    private String total_amount;
    private String service_code;
-   private List<Item> items;
+   private List<Items> items;
    private String actual_shipping_cost;
    private boolean cod;
    private String country;
@@ -245,10 +245,10 @@ public class Orders {
         return service_code;
     }
 
-   public void setItems(List<Item> items) {
+   public void setItems(List<Items> items) {
         this.items = items;
     }
-    public List<Item> getItems() {
+    public List<Items> getItems() {
         return items;
     }
 

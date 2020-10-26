@@ -50,6 +50,11 @@ public class ShopeeUrl {
 	public static final String GetItemDetail ="api/v1/item/get";
 	
 	/**
+	 *  获取商品的子产品
+	 */
+	public static final String GetVariations = "api/v1/item/tier_var/get";
+	
+	/**
 	 * 上传图片
 	 */
 	public static final String UploadImg = "api/v1/image/upload";

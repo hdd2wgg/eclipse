@@ -1,16 +1,7 @@
 package com.example.helloboot.model.item;
 
-/**
- * Copyright 2020 bejson.com 
- */
 import java.util.List;
 
-/**
-* Auto-generated: 2020-10-20 20:53:29
-*
-* @author bejson.com (i@bejson.com)
-* @website http://www.bejson.com/java2pojo/
-*/
 public class Variations {
 
    private String status;
@@ -26,6 +17,7 @@ public class Variations {
    private String variation_sku;
    private int reserved_stock;
    private long stock;
+   private String images_url;
    public void setStatus(String status) {
         this.status = status;
     }

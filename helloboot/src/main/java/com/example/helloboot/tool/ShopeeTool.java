@@ -5,8 +5,15 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -17,8 +24,10 @@ import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.example.helloboot.model.item.Item;
 import com.example.helloboot.model.item.JsonItem;
 
@@ -153,7 +162,6 @@ public class ShopeeTool {
 		long currentTimestamp = getCurrentTimestamp();
 		conditions.put("timestamp", currentTimestamp);
 		JSONObject job = new JSONObject(conditions);
-		System.out.println(job.toJSONString());
 		return job.toJSONString();
 	}
 	
@@ -173,19 +181,114 @@ public class ShopeeTool {
 
         Item item = JSON.parseObject(json, new TypeReference<Item>() {});
     }
+    
+    
+    /**
+     * 	多线程批量更新item 中 variation 的数据
+     * @throws InterruptedException 
+     * @throws ExecutionException 
+     */
+    public static void batchUpdateVariation(List<Item> items) throws InterruptedException, ExecutionException {
+    	if(items == null || items.size()==0) {
+    		return;
+    	}
+    	
+    	int threadSize = 50;//每500条数据开启一个线程
+    	int remainder = items.size()%threadSize;
+		int threadNum  = 0;//线程数
+		if(remainder == 0){
+			threadNum  = items.size()/threadSize;
+		} else {
+			threadNum  = items.size()/threadSize + 1;
+		}
+		
+		ExecutorService eService = Executors.newFixedThreadPool(threadNum );//创建一个线程池
+		
+		List<Callable<String>> cList = new ArrayList<>(); 
+		Callable<String> task = null;
+		List<Item> sList = null;
+		
+		for(int i=0;i<threadNum;i++){
+			if(i == threadNum - 1){
+				sList = items.subList(i*threadSize, items.size());
+			} else {
+				sList = items.subList(i*threadSize, (i+1)*threadSize);
+			}
+			final List<Item> nowList = sList;
+			task = new Callable<String>() {
+				@Override
+				public String call() throws Exception {
+					StringBuffer sb = new StringBuffer();
+					for(int j=0;j<nowList.size();j++){
+						sb.append(""+nowList.get(j));
+					}
+					return sb.toString();
+				}
+			};
+			cList.add(task);
+		}
+		List<Future<String>> results = eService.invokeAll(cList);
+		for(Future<String> str:results){
+			System.out.println(str.get());
+		}
+		eService.shutdown();
+    	
+    }
+    
+    public static String get_image_url(int shopId,long item_id,String option) {
+    	Map<String, Object> cons = new HashMap<String,Object>();
+    	cons.put("shopid", shopId);
+    	cons.put("item_id", item_id);
+    	String jsonS = getShopeeData(ShopeeUrl.GetVariations, cons);
+    	JSONObject job  = JSONObject.parseObject(jsonS);
+    	JSONObject joa = (JSONObject)job.getJSONArray("tier_variation").get(0);
+//    	String json_options_str = JSONObject.toJSONString(json_options, SerializerFeature.WriteClassName); 
+    	List<String> options = jarr_to_list(joa.getJSONArray("options"));
+    	List<String> images_url = jarr_to_list(joa.getJSONArray("images_url"));
+    	String image_url = null;
+    	for (int i = 0; i < options.size(); i++) {
+			if(option.equals(options.get(i))) {
+				image_url = images_url.get(i);
+				break;
+			}
+		}
+    	return image_url;
+    }
+    
+    /**
+     * @param jsonArr
+     * @return 将 JSONArray 转换成  List:String
+     */
+    private static  List<String> jarr_to_list(JSONArray jsonArr){
+    	List<String> res= null;
+    	String jStr = jsonArr.toJSONString();
+    	res = JSONObject.parseArray(jStr, String.class);
+    	return res;
+    }
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException, ExecutionException {
 		Map<String, Object> conditions = new HashMap<String,Object>();
 		String[] ordersn_list = {"201014A50JJKJE"};
-		String[] images = {"https://cbu01.alicdn.com/img/ibank/2020/184/736/20244637481_1972197700.400x400.jpg","http://3r47665h74.wicp.vip:35704/sss.jpeg"};
+//		String[] images = {"https://cbu01.alicdn.com/img/ibank/2020/184/736/20244637481_1972197700.400x400.jpg","http://3r47665h74.wicp.vip:35704/sss.jpeg"};
 		conditions.put("shopid", shopid);
 //		conditions.put("ordersn_list", ordersn_list);
-		conditions.put("images", images);
-//		conditions.put("item_id", 7723519760L);
-		String shopeeUrl = ShopeeUrl.UploadImg;
+//		conditions.put("images", images);
+		conditions.put("item_id", 7723519760L);
+		String shopeeUrl = ShopeeUrl.GetVariations;
 		String res = getShopeeData(shopeeUrl, conditions);
-//		JsonItem jsonjsonItem = JSON.parseObject(res, new TypeReference<JsonItem>() {});
-		System.out.println(res);
+		
+		String option = "1 #";
+		long over = 0;
+		for (int i = 0; i < 500; i++) {
+			long begin_time = System.currentTimeMillis();
+			String image_url = get_image_url(shopid, 7723519760L, option);
+//			JsonItem jsonjsonItem = JSON.parseObject(res, new TypeReference<JsonItem>() {});
+			long end_time = System.currentTimeMillis();
+			over += (end_time - begin_time);
+			System.out.println(image_url);
+		}
+		
+		System.out.println("总时间 =" + over);
 		
 	}
 	
