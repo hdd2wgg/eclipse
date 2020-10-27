@@ -24,8 +24,17 @@ public class Items {
 	private String variation_original_price;
 	private boolean is_main_item;
 	private String image_url;
+	private String ordersn;
 
 	public Items() {}
+
+	public String getOrdersn() {
+		return ordersn;
+	}
+
+	public void setOrdersn(String ordersn) {
+		this.ordersn = ordersn;
+	}
 
 	public String getImage_url() {
 		return image_url;

@@ -2,8 +2,6 @@ package com.example.helloboot.model.order;
 
 import java.util.List;
 
-import com.example.helloboot.model.item.Item;
-
 /**
 * Auto-generated: 2020-10-20 21:44:24
 *
@@ -29,11 +27,12 @@ public class Orders {
    private String escrow_tax;
    private String tracking_no;
    private String order_status;
-   private int note_update_time;
+   private long note_update_time;
    private String fm_tn;
    private String dropshipper_phone;
    private String cancel_reason;
    private Recipient_address recipient_address;
+   private String recipient_address_js;
    private String cancel_by;
    private String escrow_amount;
    private String buyer_cancel_reason;
@@ -41,6 +40,7 @@ public class Orders {
    private String total_amount;
    private String service_code;
    private List<Items> items;
+   private String items_js;
    private String actual_shipping_cost;
    private boolean cod;
    private String country;
@@ -168,10 +168,10 @@ public class Orders {
         return order_status;
     }
 
-   public void setNote_update_time(int note_update_time) {
+   public void setNote_update_time(long note_update_time) {
         this.note_update_time = note_update_time;
     }
-    public int getNote_update_time() {
+    public long getNote_update_time() {
         return note_update_time;
     }
 

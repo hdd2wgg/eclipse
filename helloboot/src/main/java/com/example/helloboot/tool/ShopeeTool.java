@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -14,6 +15,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -30,6 +32,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.example.helloboot.model.item.Item;
 import com.example.helloboot.model.item.JsonItem;
+import com.example.helloboot.model.order.Orders;
 
 public class ShopeeTool {
 
@@ -267,30 +270,84 @@ public class ShopeeTool {
     }
 	
 	public static void main(String[] args) throws InterruptedException, ExecutionException {
-		Map<String, Object> conditions = new HashMap<String,Object>();
-		String[] ordersn_list = {"201014A50JJKJE"};
-//		String[] images = {"https://cbu01.alicdn.com/img/ibank/2020/184/736/20244637481_1972197700.400x400.jpg","http://3r47665h74.wicp.vip:35704/sss.jpeg"};
-		conditions.put("shopid", shopid);
-//		conditions.put("ordersn_list", ordersn_list);
-//		conditions.put("images", images);
-		conditions.put("item_id", 7723519760L);
-		String shopeeUrl = ShopeeUrl.GetVariations;
-		String res = getShopeeData(shopeeUrl, conditions);
+//		Map<String, Object> conditions = new HashMap<String,Object>();
+//		String[] ordersn_list = {"201014A50JJKJE"};
+////		String[] images = {"https://cbu01.alicdn.com/img/ibank/2020/184/736/20244637481_1972197700.400x400.jpg","http://3r47665h74.wicp.vip:35704/sss.jpeg"};
+//		conditions.put("shopid", shopid);
+////		conditions.put("ordersn_list", ordersn_list);
+////		conditions.put("images", images);
+//		conditions.put("item_id", 7723519760L);
+//		String shopeeUrl = ShopeeUrl.GetVariations;
+//		String res = getShopeeData(shopeeUrl, conditions);
+//		
+//		String option = "1 #";
+//		long over = 0;
+//		for (int i = 0; i < 500; i++) {
+//			long begin_time = System.currentTimeMillis();
+//			String image_url = get_image_url(shopid, 7723519760L, option);
+////			JsonItem jsonjsonItem = JSON.parseObject(res, new TypeReference<JsonItem>() {});
+//			long end_time = System.currentTimeMillis();
+//			over += (end_time - begin_time);
+//			System.out.println(image_url);
+//		}
+//		
+//		System.out.println("总时间 =" + over);
 		
-		String option = "1 #";
-		long over = 0;
-		for (int i = 0; i < 500; i++) {
-			long begin_time = System.currentTimeMillis();
-			String image_url = get_image_url(shopid, 7723519760L, option);
-//			JsonItem jsonjsonItem = JSON.parseObject(res, new TypeReference<JsonItem>() {});
-			long end_time = System.currentTimeMillis();
-			over += (end_time - begin_time);
-			System.out.println(image_url);
+		List<String> allList = new ArrayList<>();
+		allList.add("fdsfsd");
+		allList.add("rwts");
+		allList.add("jig");
+		allList.add("option");
+		
+		List<String> partList = new ArrayList<>();
+		partList.add("fdsfsd");
+		partList.add("rwts");
+		
+		List<String> exceptList = getExceptList(allList, partList);
+		for (String except : exceptList) {
+			System.out.println(except);
 		}
 		
-		System.out.println("总时间 =" + over);
-		
 	}
+	
+	/**
+	 * 获取两个List 差集   list1:String - list2:String
+	 * @param allList
+	 * @param partList
+	 * @return
+	 */
+	public static List<String> getExceptList(List<String> allList, List<String> partList) {
+		return allList.stream().filter(item ->!partList.contains(item)).collect(Collectors.toList());
+    }
+	
+	/**
+	 * @param ordersList
+	 * @return 提取ordersList 中的 ordersn
+	 */
+	public static List<String> getAllList(List<Orders> ordersList) {
+		return ordersList.stream().map(Orders::getOrdersn).collect(Collectors.toList());
+    }
+	
+	/**
+	 * @param ordersList
+	 * @param partList
+	 * @return 提取出只需要更新的List:Orders
+	 */
+	public static List<Orders> getUpdateOrdersList(List<Orders> ordersList,List<String> partList){
+		return ordersList.stream().filter(item -> partList.contains(item.getOrdersn())).collect(Collectors.toList());
+	}
+	
+	
+	
+	/*
+	 * 1.获取数据源
+	 * 2.提取ordersn list[ordersn1,ordersn2,ordersn3,.........]
+	 * 3.查询需要更新的list[ordersn1,ordersn2,.......]
+	 * 4.提取出需要插入的list[]
+	 * 5.更新数据库
+	 * 6.插入新ordersn到数据库
+	 * 
+	 * */
 	
 	
 }
