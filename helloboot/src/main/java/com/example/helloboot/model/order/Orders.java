@@ -32,7 +32,6 @@ public class Orders {
    private String dropshipper_phone;
    private String cancel_reason;
    private Recipient_address recipient_address;
-   private String recipient_address_js;
    private String cancel_by;
    private String escrow_amount;
    private String buyer_cancel_reason;
@@ -40,7 +39,6 @@ public class Orders {
    private String total_amount;
    private String service_code;
    private List<Items> items;
-   private String items_js;
    private String actual_shipping_cost;
    private boolean cod;
    private String country;

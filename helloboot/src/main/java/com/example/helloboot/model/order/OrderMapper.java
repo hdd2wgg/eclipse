@@ -3,6 +3,7 @@ package com.example.helloboot.model.order;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 public interface OrderMapper {
@@ -11,11 +12,11 @@ public interface OrderMapper {
 			+ " (estimated_shipping_fee,order_flag,payment_method,update_time,message_to_seller,"
 			+ "shipping_carrier,currency,create_time,pay_time,note,credit_card_number,days_to_ship,"
 			+ "is_split_up,ship_by_date,escrow_tax,tracking_no,order_status,note_update_time,"
-			+ "fm_tn,dropshipper_phone,cancel_reason,recipient_address,cancel_by,escrow_amount,"
-			+ "buyer_cancel_reason,goods_to_declare,total_amount,service_code,items,"
+			+ "fm_tn,dropshipper_phone,cancel_reason,cancel_by,escrow_amount,"
+			+ "buyer_cancel_reason,goods_to_declare,total_amount,service_code,"
 			+ "actual_shipping_cost,cod,country,ordersn,dropshipper,is_actual_shipping_fee_confirmed,buyer_username) "
 			+ " VALUES "
-			+ " <foreach collection='ordersList' item='orders' separator=','> "
+			+ " <foreach collection='list' item='orders' separator=','> "
 			+ "(#{orders.estimated_shipping_fee},"
 			+ "#{orders.order_flag},"
 			+ "#{orders.payment_method},"
@@ -37,14 +38,12 @@ public interface OrderMapper {
 			+ "#{orders.fm_tn},"
 			+ "#{orders.dropshipper_phone},"
 			+ "#{orders.cancel_reason},"
-			+ "#{orders.recipient_address},"
 			+ "#{orders.cancel_by},"
 			+ "#{orders.escrow_amount},"
 			+ "#{orders.buyer_cancel_reason},"
 			+ "#{orders.goods_to_declare},"
 			+ "#{orders.total_amount},"
 			+ "#{orders.service_code},"
-			+ "#{orders.items},"
 			+ "#{orders.actual_shipping_cost},"
 			+ "#{orders.cod},"
 			+ "#{orders.country},"
@@ -55,6 +54,17 @@ public interface OrderMapper {
 			+ "</foreach>"
 			+ "</script>")
 	void batchUpdateOrders(@Param("ordersList") List<Orders> ordersList);
+	
+	/**
+	 * @param ordersnList
+	 * @return 返回查询到的结果哦
+	 */
+	@Select(" <script> SELECT ordersn from t_orders WHERE ordersn IN ("
+			+ "<foreach collection='list' item='ite' separator=','>"
+			+ "#{ite}"
+			+ "</foreach>"
+			+ " </script> ")
+	List<String> queryOrdersnList(List<String> ordersnList);
 	
 	
 	// 批量插入Items
