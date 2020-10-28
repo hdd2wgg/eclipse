@@ -35,4 +35,10 @@ public class OrderServiceImpl implements OrderService{
 		return null;
 	}
 
+	@Override
+	public void batchInsertOrders(List<Orders> ordersList) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

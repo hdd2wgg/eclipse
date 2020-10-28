@@ -32,6 +32,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.example.helloboot.model.item.Item;
 import com.example.helloboot.model.item.JsonItem;
+import com.example.helloboot.model.order.Items;
 import com.example.helloboot.model.order.JsonOrders;
 import com.example.helloboot.model.order.Orders;
 
@@ -283,7 +284,10 @@ public class ShopeeTool {
      * @param condition
      * @return 根据条件获取Shopee 订单的详细的订单信息
      */
-    public static JsonOrders getXXJsonOrders(Map<String,Object> condition) {
+    public static JsonOrders getJsonOrdersDetails(int shopId,List<String> ordersnList) {
+    	Map<String,Object> condition = new HashMap<>();
+    	condition.put("shopid", shopId);
+    	condition.put("ordersn_list", ordersnList);
     	String json_str = getShopeeData(ShopeeUrl.GetOrderDetails,condition);
     	return  JSON.parseObject(json_str, new TypeReference<JsonOrders>() {});
     }
@@ -354,6 +358,14 @@ public class ShopeeTool {
 	 */
 	public static List<Orders> getUpdateOrdersList(List<Orders> ordersList,List<String> partList){
 		return ordersList.stream().filter(item -> partList.contains(item.getOrdersn())).collect(Collectors.toList());
+	}
+	
+	public static List<Items> getInsertOrderItems(List<Orders> ordersList){
+		List<Items> itemsList = new ArrayList<>();
+		for (Orders orders : ordersList) {
+			itemsList.addAll(orders.getItems());
+		}
+		return itemsList;
 	}
 	
 	

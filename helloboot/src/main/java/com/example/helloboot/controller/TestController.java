@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.helloboot.mapper.UserInterface;
-import com.example.helloboot.mapper.UserMapperImpl;
 import com.example.helloboot.model.UserBean;
 
 @RestController
@@ -36,7 +35,7 @@ public class TestController {
 	}
 
 	/**
-	 * 文件上传服务
+	 * 	文件上传服务
 	 * @param file
 	 * @return
 	 * @throws IOException

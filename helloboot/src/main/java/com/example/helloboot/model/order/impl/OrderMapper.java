@@ -99,7 +99,7 @@ public interface OrderMapper {
 			+"#{ite.is_main_item},"
 			+"#{ite.image_url},"
 			+"#{ite.ordersn})"
-			+"</foreach>"
+			+" </foreach> "
 			+ " </script>")
 	void batchInsertItems(@Param("items") List<Items> items);
 }

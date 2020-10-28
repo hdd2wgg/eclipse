@@ -14,6 +14,12 @@ public interface OrderService {
 	// 批量更新订单
 	void batchUpdateOrders(List<Orders> ordersList);
 	
+	/**
+	 * @param ordersList
+	 * 	批量将orders添加到数据库中
+	 */
+	void batchInsertOrders(List<Orders> ordersList);
+	
 	// 批量插入Items
 	void batchInsertItems(List<Items> items);
 	
