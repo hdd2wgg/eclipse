@@ -7,7 +7,6 @@ import com.example.helloboot.model.order.Orders;
 
 
 /**
- * @author Administrator
  *	定义订单写入数据库的接口
  */
 public interface OrderService {
