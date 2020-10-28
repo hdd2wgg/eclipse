@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.helloboot.mapper.UserInterface;
 import com.example.helloboot.mapper.UserMapperImpl;
 import com.example.helloboot.model.UserBean;
 
@@ -25,7 +26,7 @@ import com.example.helloboot.model.UserBean;
 public class TestController {
 
 	@Autowired
-	private UserMapperImpl service;
+	private UserInterface service;
 
 	@RequestMapping("/hello")
 	public Object helloworld() {

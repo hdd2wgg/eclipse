@@ -1,11 +1,16 @@
-package com.example.helloboot.model.order;
+package com.example.helloboot.model.order.impl;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import com.example.helloboot.model.order.Items;
+import com.example.helloboot.model.order.Orders;
+
+@Mapper
 public interface OrderMapper {
 
 	@Update("<script> INSERT INTO t_orders "
@@ -59,11 +64,12 @@ public interface OrderMapper {
 	 * @param ordersnList
 	 * @return 返回查询到的结果哦
 	 */
-	@Select(" <script> SELECT ordersn from t_orders WHERE ordersn IN ("
+	@Select("<script> "
+			+ "SELECT ordersn from t_orders WHERE ordersn IN ("
 			+ "<foreach collection='list' item='ite' separator=','>"
 			+ "#{ite}"
 			+ "</foreach>"
-			+ " </script> ")
+			+ " </script>")
 	List<String> queryOrdersnList(List<String> ordersnList);
 	
 	
@@ -73,7 +79,7 @@ public interface OrderMapper {
 			+ "is_set_item,is_add_on_deal,item_id,promotion_id,add_on_deal_id,variation_quantity_purchased,variation_sku,"
 			+ "variation_original_price,is_main_item,image_url,ordersn) "
 			+ " VALUES "
-			+" <foreach collection='items' item='ite' separator=','> "
+			+" <foreach collection='list' item='ite' separator=','> "
 			+"(#{ite.weight},"
 			+"#{ite.item_name},"
 			+"#{ite.is_wholesale},"

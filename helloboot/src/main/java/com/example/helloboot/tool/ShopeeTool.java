@@ -32,6 +32,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.example.helloboot.model.item.Item;
 import com.example.helloboot.model.item.JsonItem;
+import com.example.helloboot.model.order.JsonOrders;
 import com.example.helloboot.model.order.Orders;
 
 public class ShopeeTool {
@@ -267,6 +268,24 @@ public class ShopeeTool {
     	String jStr = jsonArr.toJSONString();
     	res = JSONObject.parseArray(jStr, String.class);
     	return res;
+    }
+    
+    /**
+     * @param condition
+     * @return 根据条件获取Shopee 的基本信息
+     */
+    public static JsonOrders getJsonOrders(Map<String,Object> condition) {
+    	String json_str = getShopeeData(ShopeeUrl.GetOrdersList,condition);
+    	return  JSON.parseObject(json_str, new TypeReference<JsonOrders>() {});
+    }
+    
+    /**
+     * @param condition
+     * @return 根据条件获取Shopee 订单的详细的订单信息
+     */
+    public static JsonOrders getXXJsonOrders(Map<String,Object> condition) {
+    	String json_str = getShopeeData(ShopeeUrl.GetOrderDetails,condition);
+    	return  JSON.parseObject(json_str, new TypeReference<JsonOrders>() {});
     }
 	
 	public static void main(String[] args) throws InterruptedException, ExecutionException {
