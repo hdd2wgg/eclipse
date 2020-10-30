@@ -247,16 +247,19 @@ public class ShopeeTool {
     	String jsonS = getShopeeData(ShopeeUrl.GetVariations, cons);
     	JSONObject job  = JSONObject.parseObject(jsonS);
     	JSONObject joa = (JSONObject)job.getJSONArray("tier_variation").get(0);
+    	System.out.println(joa.toJSONString());
 //    	String json_options_str = JSONObject.toJSONString(json_options, SerializerFeature.WriteClassName); 
     	List<String> options = jarr_to_list(joa.getJSONArray("options"));
     	List<String> images_url = jarr_to_list(joa.getJSONArray("images_url"));
     	String image_url = null;
-    	for (int i = 0; i < options.size(); i++) {
-			if(option.equals(options.get(i))) {
-				image_url = images_url.get(i);
-				break;
-			}
-		}
+    	if(images_url != null) {
+    		for (int i = 0; i < options.size(); i++) {
+    			if(option.equals(options.get(i))) {
+    				image_url = images_url.get(i);
+    				break;
+    			}
+    		}
+    	}
     	return image_url;
     }
     
@@ -265,6 +268,9 @@ public class ShopeeTool {
      * @return 将 JSONArray 转换成  List:String
      */
     private static  List<String> jarr_to_list(JSONArray jsonArr){
+    	if(jsonArr == null || jsonArr.size() == 0) {
+    		return null;
+    	}
     	List<String> res= null;
     	String jStr = jsonArr.toJSONString();
     	res = JSONObject.parseArray(jStr, String.class);
@@ -291,46 +297,19 @@ public class ShopeeTool {
     	String json_str = getShopeeData(ShopeeUrl.GetOrderDetails,condition);
     	return  JSON.parseObject(json_str, new TypeReference<JsonOrders>() {});
     }
+    
+    /**
+     * 	根据店铺ID 来获取该店铺所支持的物流方式
+     */
+    public static void getLogistics(int shopId) {
+    	Map<String,Object> con = new HashMap<>();
+    	con.put("shopid", shopId);
+    	String res = getShopeeData(ShopeeUrl.GetLogistics, con);
+    	System.out.println(res);
+    }
 	
-	public static void main(String[] args) throws InterruptedException, ExecutionException {
-//		Map<String, Object> conditions = new HashMap<String,Object>();
-//		String[] ordersn_list = {"201014A50JJKJE"};
-////		String[] images = {"https://cbu01.alicdn.com/img/ibank/2020/184/736/20244637481_1972197700.400x400.jpg","http://3r47665h74.wicp.vip:35704/sss.jpeg"};
-//		conditions.put("shopid", shopid);
-////		conditions.put("ordersn_list", ordersn_list);
-////		conditions.put("images", images);
-//		conditions.put("item_id", 7723519760L);
-//		String shopeeUrl = ShopeeUrl.GetVariations;
-//		String res = getShopeeData(shopeeUrl, conditions);
-//		
-//		String option = "1 #";
-//		long over = 0;
-//		for (int i = 0; i < 500; i++) {
-//			long begin_time = System.currentTimeMillis();
-//			String image_url = get_image_url(shopid, 7723519760L, option);
-////			JsonItem jsonjsonItem = JSON.parseObject(res, new TypeReference<JsonItem>() {});
-//			long end_time = System.currentTimeMillis();
-//			over += (end_time - begin_time);
-//			System.out.println(image_url);
-//		}
-//		
-//		System.out.println("总时间 =" + over);
-		
-		List<String> allList = new ArrayList<>();
-		allList.add("fdsfsd");
-		allList.add("rwts");
-		allList.add("jig");
-		allList.add("option");
-		
-		List<String> partList = new ArrayList<>();
-		partList.add("fdsfsd");
-		partList.add("rwts");
-		
-		List<String> exceptList = getExceptList(allList, partList);
-		for (String except : exceptList) {
-			System.out.println(except);
-		}
-		
+	public static void main(String[] args){
+		getLogistics(shopid);
 	}
 	
 	/**
@@ -357,15 +336,48 @@ public class ShopeeTool {
 	 * @return 提取出只需要更新的List:Orders
 	 */
 	public static List<Orders> getUpdateOrdersList(List<Orders> ordersList,List<String> partList){
+		if(partList == null || partList.size()==0) {
+			return null;
+		}
 		return ordersList.stream().filter(item -> partList.contains(item.getOrdersn())).collect(Collectors.toList());
 	}
 	
+	/**
+	 * @param ordersList
+	 * @return	提取出订单中的items放入一个List中
+	 */
 	public static List<Items> getInsertOrderItems(List<Orders> ordersList){
 		List<Items> itemsList = new ArrayList<>();
 		for (Orders orders : ordersList) {
 			itemsList.addAll(orders.getItems());
 		}
 		return itemsList;
+	}
+	
+	
+	/**
+	 * 	初始化每个订单中items中的图片 地址
+	 * @param ordersList
+	 */
+	public static void initItemsImage_url(int shopId,List<Items> itemsList) {
+		for (Items items : itemsList) {
+			items.setImage_url(ShopeeTool.get_image_url(shopId, items.getItem_id(), items.getVariation_name()));
+		}
+			
+	}
+	
+	/**
+	 * 	初始化items 中与它对应订单的订单号
+	 * @param ordersList
+	 */
+	public static void initItemsOrdersn(List<Orders> ordersList) {
+		if(ordersList != null && ordersList.size() != 0) {
+			for (Orders orders : ordersList) {
+				for (Items items : orders.getItems()) {
+					items.setOrdersn(orders.getOrdersn());
+				}
+			}
+		}
 	}
 	
 	

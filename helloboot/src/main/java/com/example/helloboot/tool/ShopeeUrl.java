@@ -55,6 +55,11 @@ public class ShopeeUrl {
 	public static final String GetVariations = "api/v1/item/tier_var/get";
 	
 	/**
+	 * 	获取店铺的物流方式
+	 */
+	public static final String GetLogistics = "api/v1/logistics/channel/get";
+	
+	/**
 	 * 上传图片
 	 */
 	public static final String UploadImg = "api/v1/image/upload";

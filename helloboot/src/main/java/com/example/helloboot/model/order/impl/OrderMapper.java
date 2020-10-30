@@ -21,7 +21,7 @@ public interface OrderMapper {
 			+ "buyer_cancel_reason,goods_to_declare,total_amount,service_code,"
 			+ "actual_shipping_cost,cod,country,ordersn,dropshipper,is_actual_shipping_fee_confirmed,buyer_username) "
 			+ " VALUES "
-			+ " <foreach collection='list' item='orders' separator=','> "
+			+ " <foreach collection='ordersList' item='orders' separator=','> "
 			+ "(#{orders.estimated_shipping_fee},"
 			+ "#{orders.order_flag},"
 			+ "#{orders.payment_method},"
@@ -58,8 +58,20 @@ public interface OrderMapper {
 			+ "#{orders.buyer_username})"
 			+ "</foreach>"
 			+ "</script>")
-	void batchUpdateOrders(@Param("ordersList") List<Orders> ordersList);
+	void batchInsertOrders(@Param("ordersList") List<Orders> ordersList);
 	
+	/**
+	 * 	批量修改Orders 中的订单数据
+	 * @param ordersList
+	 */
+	@Update("<script> "
+			+ " <foreach collection='ordersList' item='orders' index='index' open='' close='' separator=';'>"
+			+ " Update t_orders "
+			+ " SET order_status=#{order.order_status},update_time=#{order.update_time} "
+			+ "WHERE ordersn=#{order.ordersn}"
+			+ "</foreach>"
+			+ "</script>")
+	void batchUpdateOrders(@Param("ordersList") List<Orders> ordersList); 
 	/**
 	 * @param ordersnList
 	 * @return 返回查询到的结果哦
@@ -69,7 +81,7 @@ public interface OrderMapper {
 			+ "<foreach collection='list' item='ite' separator=','>"
 			+ "#{ite}"
 			+ "</foreach>"
-			+ " </script>")
+			+ ") </script>")
 	List<String> queryOrdersnList(List<String> ordersnList);
 	
 	
@@ -79,12 +91,12 @@ public interface OrderMapper {
 			+ "is_set_item,is_add_on_deal,item_id,promotion_id,add_on_deal_id,variation_quantity_purchased,variation_sku,"
 			+ "variation_original_price,is_main_item,image_url,ordersn) "
 			+ " VALUES "
-			+" <foreach collection='list' item='ite' separator=','> "
+			+" <foreach collection='items' item='ite' separator=','> "
 			+"(#{ite.weight},"
 			+"#{ite.item_name},"
 			+"#{ite.is_wholesale},"
 			+"#{ite.promotion_type},"
-			+"#{ite.item_sku}"
+			+"#{ite.item_sku},"
 			+"#{ite.variation_discounted_price},"
 			+"#{ite.variation_id},"
 			+"#{ite.variation_name},"
