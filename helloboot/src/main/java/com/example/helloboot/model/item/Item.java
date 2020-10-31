@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class Item {
 
-    private List<Logistics> logistics;
+    private String logistics;
     private double original_price;
     private double package_width;
     private int cmt_count;
@@ -18,7 +18,7 @@ public class Item {
     private String currency;
     private long create_time;
     private int likes;
-    private List<String> images;
+    private String images;
     private List<String> tenures;   		// 这个参数待定，不知道有什么用
     private boolean is_2tier_item;
     private int days_to_ship;
@@ -33,24 +33,33 @@ public class Item {
     private double sales;
     private int discount_id;
     private long item_id;
-    private List<String> wholesales;
+    private String wholesales;
     private String condition;
     private int package_height;
     private String name;
     private int rating_star;
     private String item_sku;
-    private List<Variations> variations;
+    private String variations;
+    private String tier_variation;
     private String size_chart;
     private boolean is_pre_order;
     private boolean has_variation;
     private List<Attributes> attributes;
     private int category_id;
     
+    public Item() {}
     
-    public void setLogistics(List<Logistics> logistics) {
+	public String getTier_variation() {
+		return tier_variation;
+	}
+	public void setTier_variation(String tier_variation) {
+		this.tier_variation = tier_variation;
+	}
+	
+	public void setLogistics(String logistics) {
          this.logistics = logistics;
      }
-     public List<Logistics> getLogistics() {
+     public String getLogistics() {
          return logistics;
      }
 
@@ -109,11 +118,10 @@ public class Item {
      public int getLikes() {
          return likes;
      }
-
-    public void setImages(List<String> images) {
+     public void setImages(String images) {
          this.images = images;
      }
-     public List<String> getImages() {
+     public String getImages() {
          return images;
      }
 
@@ -215,10 +223,10 @@ public class Item {
          return item_id;
      }
 
-    public void setWholesales(List<String> wholesales) {
+    public void setWholesales(String wholesales) {
          this.wholesales = wholesales;
      }
-     public List<String> getWholesales() {
+     public String getWholesales() {
          return wholesales;
      }
 
@@ -257,10 +265,10 @@ public class Item {
          return item_sku;
      }
 
-    public void setVariations(List<Variations> variations) {
+    public void setVariations(String variations) {
          this.variations = variations;
      }
-     public List<Variations> getVariations() {
+     public String getVariations() {
          return variations;
      }
 

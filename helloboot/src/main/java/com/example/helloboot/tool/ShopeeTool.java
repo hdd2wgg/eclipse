@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -29,7 +30,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.example.helloboot.model.item.BatchGetItem;
 import com.example.helloboot.model.item.Item;
 import com.example.helloboot.model.item.JsonItem;
 import com.example.helloboot.model.order.Items;
@@ -37,6 +38,7 @@ import com.example.helloboot.model.order.JsonOrders;
 import com.example.helloboot.model.order.Orders;
 
 public class ShopeeTool {
+	
 
 	public static final String redirect_URL = "http://3r47665h74.wicp.vip";
 	public static final String Test_partnerKey = "e037d336bbc0fb5f93da45e0e99800bbd2d30f36fd8c9edbe960fcb448e87469";
@@ -49,6 +51,11 @@ public class ShopeeTool {
 	
 	public static final String dh = "=";
 	public static final String gg = "&";
+	
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
 
 	private static String calToken(String redirectURL, String partnerKey) {
 		String baseStr = partnerKey + redirectURL;
@@ -130,7 +137,9 @@ public class ShopeeTool {
 	public static String getJsonData(String urlStr,String authorization,String jsonData) {
 		Connection connection = Jsoup.connect(urlStr)
                 .header("Host", "partner.shopeemobile.com")
+                .header("Connection", "close")
         		.header("Content-Type", "application/json; charset=UTF-8")
+        		.timeout(8000)
                 .header("Authorization",authorization)
                 .requestBody(jsonData)
                 .method(Connection.Method.POST);
@@ -297,6 +306,89 @@ public class ShopeeTool {
     	String json_str = getShopeeData(ShopeeUrl.GetOrderDetails,condition);
     	return  JSON.parseObject(json_str, new TypeReference<JsonOrders>() {});
     }
+    //////////////////////////////Items////////////////////////////////////////////////////////
+    
+    /**
+     * Use this call to get a list of items
+     * 	使用此调用获取商品列表
+     * @param shopId
+     * @param pagination_offset
+     */
+    public static JsonItem getItemsList(int shopId,int pagination_offset) {
+    	JsonItem jsonItem = null;
+    	Map<String,Object> conditions = new HashMap<>();
+    	conditions.put("pagination_offset", 0);
+    	conditions.put("pagination_entries_per_page", 100);
+    	conditions.put("shopid", shopId);
+    	conditions.put("need_deleted_item", true);
+    	String res = getShopeeData(ShopeeUrl.GetItemsList, conditions);
+    	jsonItem = JSON.parseObject(res, new TypeReference<JsonItem>() {});
+    	return jsonItem;
+    }
+    
+    /**
+     * 	提取出Item 列表中 item_id 放入一个List 中
+     * @param itemsList
+     * @return
+     */
+    private static List<Long> getItemsListOf_ItemID(List<Item> itemsList){
+    	return itemsList.stream().map(Item::getItem_id).collect(Collectors.toList());
+    }
+    
+    /**
+     * 	获取 详细的item 产品列表
+     * @param shopId
+     * @param itemsList
+     * @return
+     */
+    public static List<Item> getItemDetailList(int shopId,List<Item> itemsList){
+    	List<Long> itemIds = getItemsListOf_ItemID(itemsList);
+    	if(itemIds != null && itemIds.size() > 0) {
+    		List<Item> itemList = new ArrayList<>();
+    		for (Long itemId : itemIds) {
+    			itemList.add(getItemDetail(shopId, itemId));
+			}
+    		return itemList;
+    	}
+    	return null;
+    }
+    
+    /**
+     * Use this call to get detail of item
+     * 	使用此调用获取项目的详细信息
+     * @param shopId
+     * @param item_id
+     */
+    public static Item getItemDetail(int shopId,long itemId) {
+    	Item item = null;
+    	Map<String,Object> conditions = new HashMap<>();
+    	conditions.put("item_id", itemId);
+    	conditions.put("shopid", shopId);
+    	String res = getShopeeData(ShopeeUrl.GetItemDetail, conditions);
+    	JsonItem jsonItem = JSON.parseObject(res, new TypeReference<JsonItem>() {});
+    	item = jsonItem.getItem();
+    	if(item.getIs_2tier_item()) {
+    		item.setTier_variation(getVariations(itemId, shopId));
+    	}
+    	return item;
+    }
+    
+    /**
+     * 	获取item 的子选项的图片集合
+     * @param itemId
+     * @param shopId
+     * @return
+     */
+    public static String getVariations(long itemId,int shopId) {
+    	Map<String,Object> conditions = new HashMap<>();
+    	conditions.put("item_id", itemId);
+    	conditions.put("shopid", shopId);
+    	String res = getShopeeData(ShopeeUrl.GetVariations, conditions);
+    	return JSONObject.parseObject(res).getJSONArray("tier_variation").toJSONString();
+    }
+    
+    
+    ////////////////////////////////Logistics////////////////////////////////////////////////////
     
     /**
      * 	根据店铺ID 来获取该店铺所支持的物流方式
@@ -309,7 +401,34 @@ public class ShopeeTool {
     }
 	
 	public static void main(String[] args){
-		getLogistics(shopid);
+//		getItemsList(shopid, 0);
+		long begin = System.currentTimeMillis();
+		
+		int page = 0;
+		boolean more = true;
+		Set<String> ott = new HashSet<>();
+		for (int i = 0; i < 500; i+=100) {
+			JsonItem jsonItem = getItemsList(shopid, i);
+//				List<Item> itemList = getItemDetailList(shopid, jsonItem.getItems());
+			more = jsonItem.isMore();
+			page += 100;
+			System.out.println(page);
+			List<Long> itemIds = getItemsListOf_ItemID(jsonItem.getItems());
+			try {
+				
+				List<Item> itemList = BatchGetItem.batchGetItemList(itemIds);
+				for (Item item : itemList) {
+					ott.add(item.getItem_sku());
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		System.out.println("数据总条数：" + ott.size());
+		long end = System.currentTimeMillis();
+		System.out.println("执行时间:" + (end - begin));
+		
 	}
 	
 	/**
