@@ -21,12 +21,12 @@ public class SyncGetItemList implements Callable<List<Item>>{
 
 	@Override
 	public List<Item> call() throws Exception {
+		
 		itemIds.stream().forEach(itemId ->{
 			//业务处理
 	    	Item item = ShopeeTool.getItemDetail(this.shopId, itemId);
 	    	if(item.getIs_2tier_item()) {
 	    		String res = ShopeeTool.getVariations(itemId, this.shopId);
-	    		System.out.println(res);
 	        	item.setTier_variation(res);
 	    	}
 	    	list.add(item);

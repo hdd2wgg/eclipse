@@ -126,30 +126,34 @@ public class ShopeeTool {
 	 * @param conditions
 	 * @return
 	 */
-	public static String getShopeeData(String shopeeUrl,Map<String, Object> conditions) {
+	private static String getShopeeData(String shopeeUrl,Map<String, Object> conditions) {
 		String dataUrl = ShopeeUrl.live_host + shopeeUrl;
 		String jsonData = mapToJsonStr(conditions);
 		String baseSginUrl = dataUrl + "|" + jsonData;
 		String authorization = HmacSHA256(baseSginUrl, Live_partnerKey);
-		return getJsonData(dataUrl, authorization, jsonData);
+		
+		try {
+			return getJsonData(dataUrl, authorization, jsonData);
+		} catch (IOException e) {
+			try {
+				return getJsonData(dataUrl, authorization, jsonData);
+			} catch (IOException e1) {
+				return null;
+			}
+		}
 	}
 	
-	public static String getJsonData(String urlStr,String authorization,String jsonData) {
+	private static String getJsonData(String urlStr,String authorization,String jsonData) throws IOException  {
 		Connection connection = Jsoup.connect(urlStr)
                 .header("Host", "partner.shopeemobile.com")
                 .header("Connection", "close")
         		.header("Content-Type", "application/json; charset=UTF-8")
-        		.timeout(8000)
+        		.timeout(30000)
                 .header("Authorization",authorization)
                 .requestBody(jsonData)
                 .method(Connection.Method.POST);
-        try {
 			Response response = connection.ignoreContentType(true).execute();
 			return response.body();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-        return null;
 	}
 	
 	/*
@@ -317,10 +321,10 @@ public class ShopeeTool {
     public static JsonItem getItemsList(int shopId,int pagination_offset) {
     	JsonItem jsonItem = null;
     	Map<String,Object> conditions = new HashMap<>();
-    	conditions.put("pagination_offset", 0);
+    	conditions.put("pagination_offset", pagination_offset);
     	conditions.put("pagination_entries_per_page", 100);
     	conditions.put("shopid", shopId);
-    	conditions.put("need_deleted_item", true);
+//    	conditions.put("need_deleted_item", true);
     	String res = getShopeeData(ShopeeUrl.GetItemsList, conditions);
     	jsonItem = JSON.parseObject(res, new TypeReference<JsonItem>() {});
     	return jsonItem;
@@ -331,7 +335,7 @@ public class ShopeeTool {
      * @param itemsList
      * @return
      */
-    private static List<Long> getItemsListOf_ItemID(List<Item> itemsList){
+    public static List<Long> getItemsListOf_ItemID(List<Item> itemsList){
     	return itemsList.stream().map(Item::getItem_id).collect(Collectors.toList());
     }
     
@@ -345,8 +349,12 @@ public class ShopeeTool {
     	List<Long> itemIds = getItemsListOf_ItemID(itemsList);
     	if(itemIds != null && itemIds.size() > 0) {
     		List<Item> itemList = new ArrayList<>();
+    		Item item;
     		for (Long itemId : itemIds) {
-    			itemList.add(getItemDetail(shopId, itemId));
+    			item = getItemDetail(shopId, itemId);
+    			if(item != null) {
+    				itemList.add(item);
+    			}
 			}
     		return itemList;
     	}
@@ -365,12 +373,15 @@ public class ShopeeTool {
     	conditions.put("item_id", itemId);
     	conditions.put("shopid", shopId);
     	String res = getShopeeData(ShopeeUrl.GetItemDetail, conditions);
-    	JsonItem jsonItem = JSON.parseObject(res, new TypeReference<JsonItem>() {});
-    	item = jsonItem.getItem();
-    	if(item.getIs_2tier_item()) {
-    		item.setTier_variation(getVariations(itemId, shopId));
+    	if(res != null) {
+    		JsonItem jsonItem = JSON.parseObject(res, new TypeReference<JsonItem>() {});
+        	item = jsonItem.getItem();
+        	if(item.getIs_2tier_item()) {
+        		item.setTier_variation(getVariations(itemId, shopId));
+        	}
+        	return item;
     	}
-    	return item;
+    	return null;
     }
     
     /**
@@ -407,9 +418,9 @@ public class ShopeeTool {
 		int page = 0;
 		boolean more = true;
 		Set<String> ott = new HashSet<>();
-		for (int i = 0; i < 500; i+=100) {
-			JsonItem jsonItem = getItemsList(shopid, i);
-//				List<Item> itemList = getItemDetailList(shopid, jsonItem.getItems());
+		do {
+			JsonItem jsonItem = getItemsList(shopid, page);
+//			List<Item> itemList = getItemDetailList(shopid, jsonItem.getItems());
 			more = jsonItem.isMore();
 			page += 100;
 			System.out.println(page);
@@ -424,7 +435,7 @@ public class ShopeeTool {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
+		} while (more);
 		System.out.println("数据总条数：" + ott.size());
 		long end = System.currentTimeMillis();
 		System.out.println("执行时间:" + (end - begin));

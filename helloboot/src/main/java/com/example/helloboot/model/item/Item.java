@@ -44,7 +44,7 @@ public class Item {
     private String size_chart;
     private boolean is_pre_order;
     private boolean has_variation;
-    private List<Attributes> attributes;
+    private String attributes;
     private int category_id;
     
     public Item() {}
@@ -293,10 +293,10 @@ public class Item {
          return has_variation;
      }
 
-    public void setAttributes(List<Attributes> attributes) {
+    public void setAttributes(String attributes) {
          this.attributes = attributes;
      }
-     public List<Attributes> getAttributes() {
+     public String getAttributes() {
          return attributes;
      }
 

@@ -1,14 +1,20 @@
 package com.example.helloboot.controller;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.helloboot.model.item.BatchGetItem;
+import com.example.helloboot.model.item.Item;
+import com.example.helloboot.model.item.JsonItem;
+import com.example.helloboot.model.item.impl.ItemService;
 import com.example.helloboot.model.order.Items;
 import com.example.helloboot.model.order.JsonOrders;
 import com.example.helloboot.model.order.Orders;
@@ -23,6 +29,10 @@ public class OrderController {
 	@Autowired
 	@Qualifier("orderService")
 	private OrderService orderservice;
+	
+	@Autowired
+	@Qualifier("itemService")
+	private ItemService itemService;
 	
 	@RequestMapping("/updateOrders")
 	public void updateOrders() {
@@ -86,5 +96,37 @@ public class OrderController {
 		}
 		
 		// 条件查询返回给前端显示
+	}
+	
+	@RequestMapping("/insertItems")
+	public void insertItems() {
+		long begin = System.currentTimeMillis();
+		int shopid = 129877668;
+		int page = 0;
+		boolean more = true;
+		
+		do {
+			JsonItem jsonItem = ShopeeTool.getItemsList(shopid, page);
+//			List<Item> itemList = getItemDetailList(shopid, jsonItem.getItems());
+			more = jsonItem.isMore();
+			page += 100;
+			System.out.println(page);
+			List<Long> itemIds = ShopeeTool.getItemsListOf_ItemID(jsonItem.getItems());
+			try {
+				
+				List<Item> itemList = BatchGetItem.batchGetItemList(itemIds);
+				
+				itemService.batchInsertItems(itemList);
+				/*for (Item item : itemList) {
+					ott.add(item.getItem_sku());
+				}*/
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		} while (more);
+		long end = System.currentTimeMillis();
+		System.out.println("执行时间:" + (end - begin));
 	}
 }
