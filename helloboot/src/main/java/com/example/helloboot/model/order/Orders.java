@@ -31,14 +31,14 @@ public class Orders {
    private String fm_tn;
    private String dropshipper_phone;
    private String cancel_reason;
-   private Recipient_address recipient_address;
+   private String recipient_address; //
    private String cancel_by;
    private String escrow_amount;
    private String buyer_cancel_reason;
    private boolean goods_to_declare;
    private String total_amount;
    private String service_code;
-   private List<Items> items;
+   private List<Items> items;//
    private String actual_shipping_cost;
    private boolean cod;
    private String country;
@@ -194,10 +194,10 @@ public class Orders {
         return cancel_reason;
     }
 
-   public void setRecipient_address(Recipient_address recipient_address) {
+   public void setRecipient_address(String recipient_address) {
         this.recipient_address = recipient_address;
     }
-    public Recipient_address getRecipient_address() {
+    public String getRecipient_address() {
         return recipient_address;
     }
 

@@ -23,7 +23,6 @@ public class Items {
 	private String variation_sku;
 	private String variation_original_price;
 	private boolean is_main_item;
-	private String image_url;
 	private String ordersn;
 
 	public Items() {}
@@ -34,14 +33,6 @@ public class Items {
 
 	public void setOrdersn(String ordersn) {
 		this.ordersn = ordersn;
-	}
-
-	public String getImage_url() {
-		return image_url;
-	}
-
-	public void setImage_url(String image_url) {
-		this.image_url = image_url;
 	}
 
 	public void setWeight(double weight) {

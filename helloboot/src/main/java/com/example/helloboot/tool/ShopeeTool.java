@@ -260,6 +260,7 @@ public class ShopeeTool {
     	String jsonS = getShopeeData(ShopeeUrl.GetVariations, cons);
     	JSONObject job  = JSONObject.parseObject(jsonS);
     	JSONObject joa = (JSONObject)job.getJSONArray("tier_variation").get(0);
+    	
     	System.out.println(joa.toJSONString());
 //    	String json_options_str = JSONObject.toJSONString(json_options, SerializerFeature.WriteClassName); 
     	List<String> options = jarr_to_list(joa.getJSONArray("options"));
@@ -273,6 +274,9 @@ public class ShopeeTool {
     			}
     		}
     	}
+    	
+    	
+    	
     	return image_url;
     }
     
@@ -478,37 +482,42 @@ public class ShopeeTool {
 	 */
 	public static List<Items> getInsertOrderItems(List<Orders> ordersList){
 		List<Items> itemsList = new ArrayList<>();
+		List<Items> items = null;
 		for (Orders orders : ordersList) {
-			itemsList.addAll(orders.getItems());
+			items = orders.getItems();
+			for (Items items2 : items) {
+				items2.setOrdersn(orders.getOrdersn());
+			}
+			itemsList.addAll(items);
 		}
 		return itemsList;
 	}
 	
 	
-	/**
-	 * 	初始化每个订单中items中的图片 地址
-	 * @param ordersList
-	 */
-	public static void initItemsImage_url(int shopId,List<Items> itemsList) {
-		for (Items items : itemsList) {
-			items.setImage_url(ShopeeTool.get_image_url(shopId, items.getItem_id(), items.getVariation_name()));
-		}
-			
-	}
+//	/**
+//	 * 	初始化每个订单中items中的图片 地址
+//	 * @param ordersList
+//	 */
+//	public static void initItemsImage_url(int shopId,List<Items> itemsList) {
+//		for (Items items : itemsList) {
+//			items.setImage_url(ShopeeTool.get_image_url(shopId, items.getItem_id(), items.getVariation_name()));
+//		}
+//			
+//	}
 	
 	/**
 	 * 	初始化items 中与它对应订单的订单号
 	 * @param ordersList
 	 */
-	public static void initItemsOrdersn(List<Orders> ordersList) {
-		if(ordersList != null && ordersList.size() != 0) {
-			for (Orders orders : ordersList) {
-				for (Items items : orders.getItems()) {
-					items.setOrdersn(orders.getOrdersn());
-				}
-			}
-		}
-	}
+//	public static void initItemsOrdersn(List<Orders> ordersList) {
+//		if(ordersList != null && ordersList.size() != 0) {
+//			for (Orders orders : ordersList) {
+//				for (Items items : orders.getItems()) {
+//					items.setOrdersn(orders.getOrdersn());
+//				}
+//			}
+//		}
+//	}
 	
 	
 	

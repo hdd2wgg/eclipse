@@ -1,10 +1,8 @@
 package com.example.helloboot.controller;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -47,7 +45,7 @@ public class OrderController {
 			// 获取jsonOrders
 			Map<String, Object> con = new HashMap<String, Object>();
 			con.put("create_time_from", 1603198568);
-			con.put("create_time_to", 1603976169);
+			con.put("create_time_to", 1604156371);
 			con.put("shopid", shopId);
 			con.put("pagination_entries_per_page", 100);
 			con.put("pagination_offset", 0);
@@ -78,14 +76,14 @@ public class OrderController {
 			ordersDetailList = ShopeeTool.getJsonOrdersDetails(shopId, exceptList).getOrders();
 			System.out.println("新订单：" + ordersDetailList.size());
 			
-			// 初始化订单中item 对应的订单号码
-			ShopeeTool.initItemsOrdersn(ordersDetailList);
-			
+//			// 初始化订单中item 对应的订单号码
+//			ShopeeTool.initItemsOrdersn(ordersDetailList);
+//			
 			// 提取出订单中的items放入一个List中
 			List<Items> itemsList = ShopeeTool.getInsertOrderItems(ordersDetailList);
 			
-			// 初始化每个订单中items中的图片 地址
-			ShopeeTool.initItemsImage_url(shopId, itemsList);
+//			// 初始化每个订单中items中的图片 地址
+//			ShopeeTool.initItemsImage_url(shopId, itemsList);
 			
 			// 将数据批量插入到数据库
 			orderservice.batchInsertOrders(ordersDetailList);
