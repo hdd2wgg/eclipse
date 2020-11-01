@@ -71,26 +71,23 @@ public class OrderController {
 			
 			// 提取出 需要添加到数据库中的新订单
 			List<String> exceptList = ShopeeTool.getExceptList(allList, partList); // 需要插入的List
-			System.out.println("提取新蛋:" + exceptList.size());
-			// 获取 获取到json 中的人
-			ordersDetailList = ShopeeTool.getJsonOrdersDetails(shopId, exceptList).getOrders();
-			System.out.println("新订单：" + ordersDetailList.size());
 			
-//			// 初始化订单中item 对应的订单号码
-//			ShopeeTool.initItemsOrdersn(ordersDetailList);
-//			
-			// 提取出订单中的items放入一个List中
-			List<Items> itemsList = ShopeeTool.getInsertOrderItems(ordersDetailList);
-			
-//			// 初始化每个订单中items中的图片 地址
-//			ShopeeTool.initItemsImage_url(shopId, itemsList);
-			
-			// 将数据批量插入到数据库
-			orderservice.batchInsertOrders(ordersDetailList);
-			
-			// items 插入批量插入到数据库中
-			orderservice.batchInsertItems(itemsList);
-			
+			if(exceptList != null && exceptList.size() != 0) {
+				// 获取 获取到json 中的人
+				ordersDetailList = ShopeeTool.getJsonOrdersDetails(shopId, exceptList).getOrders();
+				System.out.println("新订单：" + ordersDetailList.size());
+				
+				// 提取出订单中的items放入一个List中
+				List<Items> itemsList = ShopeeTool.getInsertOrderItems(ordersDetailList);
+				
+				// 将数据批量插入到数据库
+				orderservice.batchInsertOrders(ordersDetailList);
+				
+				// items 插入批量插入到数据库中
+				orderservice.batchInsertItems(itemsList);
+			}else {
+				System.out.println("没有需要添加的新订单了，黄宝贝");
+			}
 		}
 		
 		// 条件查询返回给前端显示

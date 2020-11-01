@@ -66,8 +66,8 @@ public interface OrderMapper {
 	 * @param ordersList
 	 */
 	@Update("<script> "
-			+ " <foreach collection='ordersList' item='orders' index='index' open='' close='' separator=';'>"
-			+ " Update t_orders "
+			+ " <foreach collection='ordersList' item='order' index='index' open='' close='' separator=';'>"
+			+ " UPDATE t_orders "
 			+ " SET order_status=#{order.order_status},update_time=#{order.update_time} "
 			+ "WHERE ordersn=#{order.ordersn}"
 			+ "</foreach>"
