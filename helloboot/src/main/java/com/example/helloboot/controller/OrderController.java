@@ -13,9 +13,11 @@ import com.example.helloboot.model.item.BatchGetItem;
 import com.example.helloboot.model.item.Item;
 import com.example.helloboot.model.item.JsonItem;
 import com.example.helloboot.model.item.impl.ItemService;
+import com.example.helloboot.model.jsondata.JsonData;
 import com.example.helloboot.model.order.Items;
 import com.example.helloboot.model.order.JsonOrders;
 import com.example.helloboot.model.order.Orders;
+import com.example.helloboot.model.order.Shopee_Orders;
 import com.example.helloboot.model.order.impl.OrderService;
 import com.example.helloboot.tool.ShopeeTool;
 
@@ -38,14 +40,14 @@ public class OrderController {
 		int shopId = 129877668;
 		
 		JsonOrders jsonOrders;
-		List<Orders> basicOrdersList;
-		List<Orders> ordersDetailList;
+		List<Shopee_Orders> basicOrdersList;
+		List<Shopee_Orders> ordersDetailList;
 		boolean more = true;
 		while(more) {
 			// 获取jsonOrders
 			Map<String, Object> con = new HashMap<String, Object>();
-			con.put("create_time_from", 1603198568);
-			con.put("create_time_to", 1604156371);
+			con.put("create_time_from", 1604160000);
+			con.put("create_time_to", 1604583180);
 			con.put("shopid", shopId);
 			con.put("pagination_entries_per_page", 100);
 			con.put("pagination_offset", 0);
@@ -63,7 +65,7 @@ public class OrderController {
 			List<String> partList = orderservice.queryOrdersnList(allList);
 			
 			// 提取出只需要更新的订单的列表
-			List<Orders> needUpdateOrderList = ShopeeTool.getUpdateOrdersList(basicOrdersList, partList);
+			List<Shopee_Orders> needUpdateOrderList = ShopeeTool.getUpdateOrdersList(basicOrdersList, partList);
 			if(needUpdateOrderList != null) {
 				// 调用 批量更新 Orders 方法
 				orderservice.batchUpdateOrders(needUpdateOrderList);
@@ -123,5 +125,12 @@ public class OrderController {
 		} while (more);
 		long end = System.currentTimeMillis();
 		System.out.println("执行时间:" + (end - begin));
+	}
+	
+	@RequestMapping("/queryOrderList")
+	public Object queryOrderList() {
+		List<Orders> orderList = orderservice.queryOrdersList(null, 0, 100);
+		JsonData res = new JsonData(0, orderList, null, 0);
+		return res.jsonData();
 	}
 }

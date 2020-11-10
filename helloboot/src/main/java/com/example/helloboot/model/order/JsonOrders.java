@@ -5,7 +5,7 @@ import java.util.List;
 public class JsonOrders {
 	private boolean more;
 	private List<String> errors;
-	private List<Orders> orders;
+	private List<Shopee_Orders> orders;
 	private String request_id;
 
 	public void setErrors(List<String> errors) {
@@ -24,11 +24,11 @@ public class JsonOrders {
 		this.more = more;
 	}
 
-	public void setOrders(List<Orders> orders) {
+	public void setOrders(List<Shopee_Orders> orders) {
 		this.orders = orders;
 	}
 
-	public List<Orders> getOrders() {
+	public List<Shopee_Orders> getOrders() {
 		return orders;
 	}
 

@@ -1,14 +1,20 @@
 package com.example.helloboot.model.order.impl;
 
 import java.util.List;
+import java.util.Map;
 
+import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.mapping.FetchType;
 
 import com.example.helloboot.model.order.Items;
 import com.example.helloboot.model.order.Orders;
+import com.example.helloboot.model.order.Shopee_Orders;
 
 @Mapper
 public interface OrderMapper {
@@ -59,7 +65,7 @@ public interface OrderMapper {
 			+ "#{orders.buyer_username})"
 			+ "</foreach>"
 			+ "</script>")
-	void batchInsertOrders(@Param("ordersList") List<Orders> ordersList);
+	void batchInsertOrders(@Param("ordersList") List<Shopee_Orders> ordersList);
 	
 	/**
 	 * 	批量修改Orders 中的订单数据
@@ -72,7 +78,7 @@ public interface OrderMapper {
 			+ "WHERE ordersn=#{order.ordersn}"
 			+ "</foreach>"
 			+ "</script>")
-	void batchUpdateOrders(@Param("ordersList") List<Orders> ordersList); 
+	void batchUpdateOrders(@Param("ordersList") List<Shopee_Orders> ordersList); 
 	/**
 	 * @param ordersnList
 	 * @return 返回查询到的结果哦
@@ -114,4 +120,31 @@ public interface OrderMapper {
 			+" </foreach> "
 			+ " </script>")
 	void batchInsertItems(@Param("items") List<Items> items);
+	
+	/**
+	 * 	根据订单号码查询订单的产品的列表
+	 * @param ordersn
+	 * @return
+	 */
+	@Select("SELECT o.ordersn,o.is_main_item,o.variation_original_price,i.tier_variation,i.images,o.variation_sku,o.variation_quantity_purchased,o.add_on_deal_id,o.promotion_id,o.item_id,o.is_add_on_deal,o.is_set_item,o.variation_name,o.variation_id,o.variation_discounted_price,o.item_sku,o.promotion_type,o.is_wholesale,o.item_name,o.weight FROM t_order_items as o,t_item as i WHERE i.item_id = o.item_id AND o.ordersn =#{ordersn};")
+	List<Items> queryItemsByOrdersn(@Param("ordersn")String ordersn);
+	
+	/**
+	 * 	条件查询订单条件
+	 * @param condition
+	 * @return
+	 */
+	@Select(" SELECT "
+			+ " estimated_shipping_fee,order_flag,payment_method,update_time,message_to_seller,shipping_carrier,currency,create_time,pay_time,note,credit_card_number,days_to_ship,is_split_up,ship_by_date,escrow_tax,tracking_no,order_status,note_update_time,fm_tn,dropshipper_phone,cancel_reason,recipient_address,cancel_by,escrow_amount,buyer_cancel_reason,goods_to_declare,total_amount,service_code,actual_shipping_cost,cod,country,ordersn,dropshipper,is_actual_shipping_fee_confirmed,buyer_username "
+			+ " FROM t_orders "
+	
+//			+ " WHERE order_status =#{ordersn} "
+			+ " LIMIT #{page},#{size} ")
+	@Results({
+		@Result(column="ordersn",property="ordersn"),
+		@Result(column="ordersn",property="items",many=@Many(
+				select="com.example.helloboot.model.order.impl.OrderMapper.queryItemsByOrdersn",fetchType=FetchType.LAZY
+				))
+	})
+	List<Orders> queryOrdersList(Map<String, Object> condition,int page,int size);
 }

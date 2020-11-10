@@ -3,7 +3,7 @@ package com.example.helloboot.model.item;
 
 /**
 * 商品属性
-* 
+* 撒旦法阿斯蒂芬asdfsadfasdfn nl1 ssf 你是不是傻逼l L L iI1
 */
 public class Attributes {
 

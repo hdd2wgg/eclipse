@@ -1,5 +1,7 @@
 package com.example.helloboot.model.order;
 
+import com.alibaba.fastjson.JSONArray;
+
 /**
  * @author 黄大大的男人
  * 获取Shopee 店铺订单的的数据
@@ -21,11 +23,29 @@ public class Items {
 	private int add_on_deal_id;
 	private int variation_quantity_purchased;
 	private String variation_sku;
+	private JSONArray images;           			// images 图片列表，在查询的时候会用到，在导入的时候用不到
+	private JSONArray tier_variation;				//  images 在查询的时候用到，在导入的时候用不到
 	private String variation_original_price;
 	private boolean is_main_item;
 	private String ordersn;
 
 	public Items() {}
+
+	public JSONArray getImages() {
+		return images;
+	}
+
+	public void setImages(String images) {
+		this.images = JSONArray.parseArray(images);
+	}
+
+	public JSONArray getTier_variation() {
+		return tier_variation;
+	}
+
+	public void setTier_variation(String tier_variation) {
+		this.tier_variation =JSONArray.parseArray(tier_variation);
+	}
 
 	public String getOrdersn() {
 		return ordersn;

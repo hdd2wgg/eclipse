@@ -36,6 +36,8 @@ import com.example.helloboot.model.item.JsonItem;
 import com.example.helloboot.model.order.Items;
 import com.example.helloboot.model.order.JsonOrders;
 import com.example.helloboot.model.order.Orders;
+import com.example.helloboot.model.order.Shopee_Orders;
+import com.example.helloboot.model.shopee.Shop;
 
 public class ShopeeTool {
 	
@@ -300,6 +302,7 @@ public class ShopeeTool {
      */
     public static JsonOrders getJsonOrders(Map<String,Object> condition) {
     	String json_str = getShopeeData(ShopeeUrl.GetOrdersList,condition);
+    	System.out.println("json_str:" + json_str);
     	return  JSON.parseObject(json_str, new TypeReference<JsonOrders>() {});
     }
     
@@ -416,33 +419,8 @@ public class ShopeeTool {
     }
 	
 	public static void main(String[] args){
-//		getItemsList(shopid, 0);
-		long begin = System.currentTimeMillis();
-		
-		int page = 0;
-		boolean more = true;
-		Set<String> ott = new HashSet<>();
-		do {
-			JsonItem jsonItem = getItemsList(shopid, page);
-//			List<Item> itemList = getItemDetailList(shopid, jsonItem.getItems());
-			more = jsonItem.isMore();
-			page += 100;
-			System.out.println(page);
-			List<Long> itemIds = getItemsListOf_ItemID(jsonItem.getItems());
-			try {
-				
-				List<Item> itemList = BatchGetItem.batchGetItemList(itemIds);
-				for (Item item : itemList) {
-					ott.add(item.getItem_sku());
-				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} while (more);
-		System.out.println("数据总条数：" + ott.size());
-		long end = System.currentTimeMillis();
-		System.out.println("执行时间:" + (end - begin));
+//		
+		getShopInfo(shopid);
 		
 	}
 	
@@ -460,8 +438,8 @@ public class ShopeeTool {
 	 * @param ordersList
 	 * @return 提取ordersList 中的 ordersn
 	 */
-	public static List<String> getAllList(List<Orders> ordersList) {
-		return ordersList.stream().map(Orders::getOrdersn).collect(Collectors.toList());
+	public static List<String> getAllList(List<Shopee_Orders> ordersList) {
+		return ordersList.stream().map(Shopee_Orders::getOrdersn).collect(Collectors.toList());
     }
 	
 	/**
@@ -469,7 +447,7 @@ public class ShopeeTool {
 	 * @param partList
 	 * @return 提取出只需要更新的List:Orders
 	 */
-	public static List<Orders> getUpdateOrdersList(List<Orders> ordersList,List<String> partList){
+	public static List<Shopee_Orders> getUpdateOrdersList(List<Shopee_Orders> ordersList,List<String> partList){
 		if(partList == null || partList.size()==0) {
 			return null;
 		}
@@ -480,10 +458,10 @@ public class ShopeeTool {
 	 * @param ordersList
 	 * @return	提取出订单中的items放入一个List中
 	 */
-	public static List<Items> getInsertOrderItems(List<Orders> ordersList){
+	public static List<Items> getInsertOrderItems(List<Shopee_Orders> ordersList){
 		List<Items> itemsList = new ArrayList<>();
 		List<Items> items = null;
-		for (Orders orders : ordersList) {
+		for (Shopee_Orders orders : ordersList) {
 			items = orders.getItems();
 			for (Items items2 : items) {
 				items2.setOrdersn(orders.getOrdersn());
@@ -491,6 +469,14 @@ public class ShopeeTool {
 			itemsList.addAll(items);
 		}
 		return itemsList;
+	}
+	
+	public static void getShopInfo(int shopId) {
+		Map<String,Object> conditions = new HashMap<>();
+		conditions.put("shopid", shopId);
+		String res = getShopeeData(ShopeeUrl.GetShopInfo, conditions);
+		Shop shop = JSON.parseObject(res, new TypeReference<Shop>(){});
+		System.out.println(shop.getShop_description());
 	}
 	
 	

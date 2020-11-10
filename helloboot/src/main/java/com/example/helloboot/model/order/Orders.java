@@ -2,6 +2,8 @@ package com.example.helloboot.model.order;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSONObject;
+
 /**
 * Auto-generated: 2020-10-20 21:44:24
 *
@@ -31,12 +33,12 @@ public class Orders {
    private String fm_tn;
    private String dropshipper_phone;
    private String cancel_reason;
-   private String recipient_address; //
+   private JSONObject recipient_address; //
    private String cancel_by;
-   private String escrow_amount;
+   private double escrow_amount;
    private String buyer_cancel_reason;
    private boolean goods_to_declare;
-   private String total_amount;
+   private double total_amount;
    private String service_code;
    private List<Items> items;//
    private String actual_shipping_cost;
@@ -195,9 +197,9 @@ public class Orders {
     }
 
    public void setRecipient_address(String recipient_address) {
-        this.recipient_address = recipient_address;
+        this.recipient_address = JSONObject.parseObject(recipient_address);
     }
-    public String getRecipient_address() {
+    public JSONObject getRecipient_address() {
         return recipient_address;
     }
 
@@ -208,10 +210,10 @@ public class Orders {
         return cancel_by;
     }
 
-   public void setEscrow_amount(String escrow_amount) {
+   public void setEscrow_amount(double escrow_amount) {
         this.escrow_amount = escrow_amount;
     }
-    public String getEscrow_amount() {
+    public double getEscrow_amount() {
         return escrow_amount;
     }
 
@@ -229,10 +231,10 @@ public class Orders {
         return goods_to_declare;
     }
 
-   public void setTotal_amount(String total_amount) {
+   public void setTotal_amount(double total_amount) {
         this.total_amount = total_amount;
     }
-    public String getTotal_amount() {
+    public double getTotal_amount() {
         return total_amount;
     }
 

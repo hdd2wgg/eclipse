@@ -1,5 +1,8 @@
 package com.example.helloboot.model.jsondata;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
 public class JsonData {
 
 	private int code;
@@ -37,5 +40,14 @@ public class JsonData {
 	public void setCount(int count) {
 		this.count = count;
 	}
-	
+//	int code,Object data,String msg,int count
+	public JSONObject jsonData() {
+		
+		JSONObject job = new JSONObject();
+		job.put("code", this.code);
+		job.put("data", this.data);
+		job.put("msg", this.msg);
+		job.put("count", this.count);
+		return job;
+	}
 }
